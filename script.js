@@ -20,6 +20,10 @@ function addBookToLibrary(title, author, pageCount, haveRead) {
 
 function viewLibrary() {
     let tableBody = document.querySelector('.library>tbody');
+
+    while (tableBody.firstChild) {
+        tableBody.removeChild(tableBody.lastChild);
+    }
     
     myLibrary.forEach(
         (book) => { 
@@ -41,6 +45,18 @@ function viewLibrary() {
             readCell.textContent = book.haveRead;
             tableRow.appendChild(readCell);
 
+            let delCell = document.createElement('td');
+            let delBtn = document.createElement('button');
+            delBtn.textContent = 'delete';
+            delCell.appendChild(delBtn);
+            tableRow.appendChild(delCell);
+
+            let chgCell = document.createElement('td');
+            let chgBtn = document.createElement('button');
+            chgBtn.textContent = 'change';
+            chgCell.appendChild(chgBtn);
+            tableRow.appendChild(chgCell);
+
             tableBody.appendChild(tableRow);
         }
     );
@@ -49,6 +65,7 @@ function viewLibrary() {
 // add books
 addBookToLibrary('Eloquent Javascript', 'Marijn Haverbeke', 450, 'N');
 addBookToLibrary('some super long name to test wrapping', 'a weirdly long long long name', 5, 'Y');
+addBookToLibrary('A Confederacy of Dunces', 'Toole', 300, 'Y');
 
 // fill table for debug
 viewLibrary()
