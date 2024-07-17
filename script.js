@@ -21,6 +21,7 @@ function addBookToLibrary(title, author, pageCount, haveRead) {
 function viewLibrary() {
     let tableBody = document.querySelector('.library>tbody');
 
+    // empty dom element before refilling
     while (tableBody.firstChild) {
         tableBody.removeChild(tableBody.lastChild);
     }
@@ -47,13 +48,13 @@ function viewLibrary() {
 
             let delCell = document.createElement('td');
             let delBtn = document.createElement('button');
-            delBtn.textContent = 'delete';
+            delBtn.textContent = 'Delete';
             delCell.appendChild(delBtn);
             tableRow.appendChild(delCell);
 
             let chgCell = document.createElement('td');
             let chgBtn = document.createElement('button');
-            chgBtn.textContent = 'change';
+            chgBtn.textContent = 'Change';
             chgCell.appendChild(chgBtn);
             tableRow.appendChild(chgCell);
 

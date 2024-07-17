@@ -11,62 +11,63 @@ html {
     --padding: 10px;
 }
 
-.grid-wrapper {
+.flex-wrapper {
     display: flex;
     flex-direction: column;
     align-items: center;
     padding: var(--padding);
 }
 
-table {
-    width: min(700px, 100%);
-    margin: 50px 0px;
+.library {
     border-collapse: collapse;
+    max-width: 700px;
 
-    table-layout: fixed;
-    thead th:nth-child(1) {
-        width: 35%;
+    > * {
+        text-transform: capitalize;
     }
-    thead th:nth-child(2) {
-        width: 25%;
+
+    caption {
+        font-size: large;
+        font-weight: 700;
+        margin-bottom: calc(var(--padding) * 2);
     }
-    thead th:nth-child(3),
-    thead th:nth-child(4),
-    thead th:nth-child(5),
-    thead th:nth-child(6) {
-        width: 10%;
+
+    tr {
+        display: grid;
+        grid-template-columns: 30% 20% repeat(4, minmax(75px, 1fr));
     }
+
+    thead, 
+    tbody tr:nth-child(even) {
+        /* banded background color */
+        background-color: var(--color-bg);
+    }
+
+    th, 
+    td {
+        border-collapse: collapse;
+        padding: var(--padding);
+        border: 1px solid black;
+    }
+
+    tr td:nth-child(3),
+    tr td:nth-child(4),
+    tr td:nth-child(5),
+    tr td:nth-child(6) {
+        text-align: center;
+    }
+
+    button {
+        height: 1.5em;
+        width: 100%;
+    }
+
 }
 
-caption {
-    font-size: large;
-    font-weight: 700;
-    margin-bottom: calc(var(--padding) * 2);
-}
 
-thead, 
-tbody tr:nth-child(even) {
-    /* banded background color */
-    background-color: var(--color-bg);
-}
 
-th, 
-td {
-    padding: var(--padding);
-    border: 1px solid black;
-}
 
-tr td:nth-child(3),
-tr td:nth-child(4) {
-    text-align: center;
-}
 
-button {
-    height: 100%;
-    width: 100%;
-}
 
-caption,
-th {
-    text-transform: capitalize;
-}
+
+
