@@ -7,7 +7,6 @@ function Book(title, author, pageCount, haveRead) {
     this.haveRead = haveRead;
 }
 
-// object method prototypes
 Book.prototype.logBio = function() {
     console.log(`${this.title} by ${this.author}.`);
 };
@@ -18,13 +17,12 @@ function Library() {
     this.books = [];
 }
 
-// Library method prototypes
 Library.prototype.add = function(book) {
     this.books.push(book);
 };
 
 Library.prototype.view = function() {
-    // drop books into table
+    // drop books into html table and give btn functionality
 
     let tableBody = document.querySelector('.library>tbody');
 
@@ -76,10 +74,13 @@ Library.prototype.view = function() {
         }
     );
 
+    // helper functions
     this.delete_handler();
+    this.change_handler();
 }
 
 Library.prototype.delete_handler = function() {
+    // delete selected book and refresh view
     let btns = document.querySelectorAll('.delete');
 
     btns.forEach( (btn) => {
@@ -89,8 +90,29 @@ Library.prototype.delete_handler = function() {
             let itemToRemove = e.target.classList[1];
             this.books.splice(itemToRemove,1);
 
-            // reset library view after each button click
+            // refresh library view after each button click
+            // required to reset the id attributes
             this.view()
+        });
+    });
+};
+
+Library.prototype.change_handler = function() {
+    // toggle selected book's read (y/n) attribute
+    let btns = document.querySelectorAll('.change');
+
+    btns.forEach( (btn) => {
+        btn.addEventListener('click', (e) => {
+
+            console.log(e.target.classList);
+            let index = e.target.classList[1];
+
+            if (this.books[index].haveRead === 'y') {
+                this.books[index].haveRead = 'n';
+            } else {
+                this.books[index].haveRead = 'y';
+            };
+            this.view();
         });
     });
 };
