@@ -61,8 +61,17 @@ html {
         height: 1.5em;
         width: 100%;
     }
+    button[class^=delete] {
+        /* class name starts with 'delete' */
+        background-color: red;
+    }
+    button[class^=change] {
+        /* class name starts with 'change' */
+        background-color: green;
+    }
 
 }
+
 
 
 

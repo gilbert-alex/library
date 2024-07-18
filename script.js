@@ -1,11 +1,10 @@
 
-// Book constructor and attributes
+// Book constructor
 function Book(title, author, pageCount, haveRead) {
     this.title = title;
     this.author = author;
     this.pageCount = pageCount;
     this.haveRead = haveRead;
-    this.shelfID = '';
 }
 
 // object method prototypes
@@ -13,74 +12,103 @@ Book.prototype.logBio = function() {
     console.log(`${this.title} by ${this.author}.`);
 };
 
-Book.prototype.putOnShelf = function(library) {
-    library.push({
-        title : this.title,
-        author : this.author,
-        pageCount : this.pageCount,
-        haveRead : this.haveRead
-    }
-    );
+
+// Library constructor
+function Library() {
+    this.books = [];
 }
 
-// Library functions
-const viewLibrary = function(library) {
+// Library method prototypes
+Library.prototype.add = function(book) {
+    this.books.push(book);
+};
+
+Library.prototype.view = function() {
+    // drop books into table
+
     let tableBody = document.querySelector('.library>tbody');
 
-    // empty dom element before refilling
+    // empty table of any existing books
     while (tableBody.firstChild) {
         tableBody.removeChild(tableBody.lastChild);
     }
     
-    library.forEach(
-        (book) => { 
-            let tableRow = document.createElement('tr');
+    // to keep index of books in table for btn functionality
+    let counter = 0;
 
-            let titleCell = document.createElement('td');
-            titleCell.textContent = book.title;
-            tableRow.appendChild(titleCell);
+    this.books.forEach( (book) => { 
 
-            let authorCell = document.createElement('td');
-            authorCell.textContent = book.author;
-            tableRow.appendChild(authorCell);
+            let newRow = document.createElement('tr');
 
-            let pagesCell = document.createElement('td');
-            pagesCell.textContent = book.pageCount;
-            tableRow.appendChild(pagesCell);
+            let newTitle = document.createElement('td');
+            newTitle.textContent = book.title;
+            newRow.appendChild(newTitle);
 
-            let readCell = document.createElement('td');
-            readCell.textContent = book.haveRead;
-            tableRow.appendChild(readCell);
+            let newAuthor = document.createElement('td');
+            newAuthor.textContent = book.author;
+            newRow.appendChild(newAuthor);
+
+            let newPageCount = document.createElement('td');
+            newPageCount.textContent = book.pageCount;
+            newRow.appendChild(newPageCount);
+
+            let newHaveRead = document.createElement('td');
+            newHaveRead.textContent = book.haveRead;
+            newRow.appendChild(newHaveRead);
 
             let delCell = document.createElement('td');
             let delBtn = document.createElement('button');
             delBtn.textContent = 'Delete';
+            delBtn.classList = `delete ${counter}`;
             delCell.appendChild(delBtn);
-            tableRow.appendChild(delCell);
+            newRow.appendChild(delCell);
 
             let chgCell = document.createElement('td');
             let chgBtn = document.createElement('button');
             chgBtn.textContent = 'Change';
+            chgBtn.classList = `change ${counter}`;
             chgCell.appendChild(chgBtn);
-            tableRow.appendChild(chgCell);
+            newRow.appendChild(chgCell);
 
-            tableBody.appendChild(tableRow);
+            tableBody.appendChild(newRow);
+
+            counter++;
         }
     );
+
+    this.delete_handler();
 }
 
-// global variable
-const myLibrary = [];
+Library.prototype.delete_handler = function() {
+    let btns = document.querySelectorAll('.delete');
 
-// add books
+    btns.forEach( (btn) => {
+        btn.addEventListener('click', (e) => {
+
+            // console.log(e.target.classList);  // debug
+            let itemToRemove = e.target.classList[1];
+            this.books.splice(itemToRemove,1);
+
+            // reset library view after each button click
+            this.view()
+        });
+    });
+};
+
+
+
+
+// demo purposes
 const book_1 = new Book('eloquent javascript', 'marijn haverbeke', 450, 'n');
-book_1.putOnShelf(myLibrary);
 
 const book_2 = new Book('some super long name to test wrapping', 'a weirdly long long long name', 5, 'y');
-book_2.putOnShelf(myLibrary);
 
 const book_3 = new Book('a confederacy of dunces', 'toole', 300, 'y');
-book_3.putOnShelf(myLibrary);
 
-// fill table for debug
-viewLibrary(myLibrary);
+const myLibrary = new Library;
+
+myLibrary.add(book_1);
+myLibrary.add(book_2);
+myLibrary.add(book_3);
+
+myLibrary.view();
