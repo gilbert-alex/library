@@ -18,6 +18,12 @@ html {
     padding: var(--padding);
 }
 
+button,
+input[type='submit'] {
+    height: 2em;
+    padding: 0px 5px;
+}
+
 .library {
     border-collapse: collapse;
     max-width: 700px;
@@ -58,20 +64,45 @@ html {
     }
 
     button {
-        height: 1.5em;
         width: 100%;
-    }
-    button[class^=delete] {
-        /* class name starts with 'delete' */
-        background-color: red;
-    }
-    button[class^=change] {
-        /* class name starts with 'change' */
-        background-color: green;
     }
 
 }
 
+dialog {
+    margin: auto;
+    padding: 20px;
+
+    * {
+        text-transform: capitalize;
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        align-items: center;
+
+        p {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            grid-template-areas: 
+                "left right";
+            justify-content: space-between;
+            width: 100%;
+            
+
+            label {
+                grid-area: left;
+            }
+
+            input {
+                grid-area: right;
+                text-transform: none;
+            }
+        }
+    }
+}
 
 
 

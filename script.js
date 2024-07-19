@@ -1,5 +1,5 @@
 
-// Book constructor
+// Book constructor & prototypes
 function Book(title, author, pageCount, haveRead) {
     this.title = title;
     this.author = author;
@@ -12,7 +12,7 @@ Book.prototype.logBio = function() {
 };
 
 
-// Library constructor
+// Library constructor & prototypes
 function Library() {
     this.books = [];
 }
@@ -117,6 +117,13 @@ Library.prototype.change_handler = function() {
     });
 };
 
+// Buttons
+const newBook = document.querySelector('.add');
+const dialog = document.querySelector('dialog');
+
+newBook.addEventListener('click', () => {
+    dialog.show();
+})
 
 
 

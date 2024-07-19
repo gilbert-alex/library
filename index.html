@@ -9,6 +9,7 @@
 </head>
 <body>
     <div class="flex-wrapper">
+
         <table class="library">
             <caption>a library of books</caption>
             <thead>
@@ -25,5 +26,31 @@
             </tbody>
         </table>
     </div>
+
+    <div class="flex-wrapper">
+        <button class="add">New Book</button>
+    </div>
+
+    <dialog>
+        <form action="" method="get">
+            <h3>new book</h3>
+            <p>
+                <label for="title">title:</label>
+                <input id="title" type="text" required />
+            </p>
+            <p>
+                <label for="author">author:</label>
+                <input id="author" type="text" required />
+            </p><p>
+                <label for="pageCount">number of pages:</label>
+                <input id="pageCount" type="number" required />
+            </p><p>
+                <label for="readYN">have read (Y/N):</label>
+                <input id="readYN" type="checkbox" required />
+            </p>
+            <input type="submit" id="close" value="add">
+        </form>
+    </dialog>
+
 </body>
 </html>
