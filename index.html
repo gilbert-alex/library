@@ -32,21 +32,21 @@
     </div>
 
     <dialog>
-        <form action="" method="get">
+        <form action="" method="dialog">
             <h3>new book</h3>
             <p>
                 <label for="title">title:</label>
-                <input id="title" type="text" required />
+                <input id="title" class="data" type="text" name="title" required />
             </p>
             <p>
                 <label for="author">author:</label>
-                <input id="author" type="text" required />
+                <input id="author" class="data" type="text" name='author' required />
             </p><p>
                 <label for="pageCount">number of pages:</label>
-                <input id="pageCount" type="number" required />
+                <input id="pageCount" class="data" type="number" name="pageCount" required />
             </p><p>
                 <label for="readYN">have read (Y/N):</label>
-                <input id="readYN" type="checkbox" required />
+                <input id="readYN" class="data" type="checkbox" name="readYN" required />
             </p>
             <input type="submit" id="close" value="add">
         </form>

@@ -1,4 +1,5 @@
 
+
 // Book constructor & prototypes
 function Book(title, author, pageCount, haveRead) {
     this.title = title;
@@ -104,7 +105,6 @@ Library.prototype.change_handler = function() {
     btns.forEach( (btn) => {
         btn.addEventListener('click', (e) => {
 
-            console.log(e.target.classList);
             let index = e.target.classList[1];
 
             if (this.books[index].haveRead === 'y') {
@@ -117,12 +117,37 @@ Library.prototype.change_handler = function() {
     });
 };
 
-// Buttons
-const newBook = document.querySelector('.add');
-const dialog = document.querySelector('dialog');
 
-newBook.addEventListener('click', () => {
+// Interactivity
+const add = document.querySelector('.add');
+const dialog = document.querySelector('dialog');
+const form = dialog.querySelector('form');
+const inputs = dialog.querySelectorAll('.data');
+
+add.addEventListener('click', () => {
+    // show dialog for new book
     dialog.show();
+})
+
+dialog.addEventListener('close', () => {
+    // Add a new book to the library with the new book dialog
+
+    let userInput = {};
+    inputs.forEach( (data) => {
+        userInput[data.name] = data.value;
+    });
+
+    form.reset();
+
+    // console.log(newBook);    // debug
+
+    const newBook = new Book(
+        userInput['title'], userInput['author'],
+        userInput['pageCount'], userInput['readYN']
+    );
+
+    myLibrary.add(newBook);
+    myLibrary.view();
 })
 
 
