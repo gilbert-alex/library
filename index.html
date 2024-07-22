@@ -8,7 +8,7 @@
     <script src="./script.js" defer></script>
 </head>
 <body>
-    <div class="flex-wrapper">
+    <div class="single_column_center">
 
         <table class="library">
             <caption>a library of books</caption>
@@ -23,34 +23,46 @@
                 </tr>
             </thead>
             <tbody>
+
             </tbody>
         </table>
     </div>
 
-    <div class="flex-wrapper">
-        <button class="add">New Book</button>
-    </div>
 
     <dialog>
         <form action="" method="dialog">
             <h3>new book</h3>
-            <p>
+            <div class="q1">
                 <label for="title">title:</label>
-                <input id="title" class="data" type="text" name="title" required />
-            </p>
-            <p>
+                <input id="title" type="text" name="title"/>
+            </div>
+            <div class="q1">
                 <label for="author">author:</label>
-                <input id="author" class="data" type="text" name='author' required />
-            </p><p>
+                <input id="author" type="text" name='author'/>
+            </div>
+            <div class="q1">
                 <label for="pageCount">number of pages:</label>
-                <input id="pageCount" class="data" type="number" name="pageCount" required />
-            </p><p>
-                <label for="readYN">have read (Y/N):</label>
-                <input id="readYN" class="data" type="checkbox" name="readYN" required />
-            </p>
-            <input type="submit" id="close" value="add">
+                <input id="pageCount" type="number" name="pageCount"/>
+            </div>
+            <div class="q2">
+                <p class="question">i've read this book:</p>
+                <div class="answer">
+                    <label for="yes">yes</label>
+                    <input type="radio" id="yes" name="haveRead" value="y"/>
+                    <label for="no">no</label>
+                    <input type="radio" id="no" name="haveRead" value="n"/>
+                </div>
+            </div>
+            <div class="btns">
+                <input type="button" id="cancel" value="cancel">
+                <input type="button" id="close" value="add book to library">
+            </div>
         </form>
     </dialog>
+
+    <div class="single_column_center">
+        <button class="add">New Book</button>
+    </div>
 
 </body>
 </html>

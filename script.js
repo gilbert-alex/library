@@ -1,19 +1,11 @@
 
-
-// Book constructor & prototypes
-function Book(title, author, pageCount, haveRead) {
-    this.title = title;
-    this.author = author;
-    this.pageCount = pageCount;
-    this.haveRead = haveRead;
+function Book(details) {
+    this.title = details.title;
+    this.author = details.author;
+    this.pageCount = details.pageCount;
+    this.haveRead = details.haveRead;
 }
 
-Book.prototype.logBio = function() {
-    console.log(`${this.title} by ${this.author}.`);
-};
-
-
-// Library constructor & prototypes
 function Library() {
     this.books = [];
 }
@@ -118,46 +110,82 @@ Library.prototype.change_handler = function() {
 };
 
 
-// Interactivity
+// DOM element selection
 const add = document.querySelector('.add');
 const dialog = document.querySelector('dialog');
 const form = dialog.querySelector('form');
-const inputs = dialog.querySelectorAll('.data');
+const close = document.getElementById('close');
+const cancel = document.getElementById('cancel');
 
+// Event listeners
 add.addEventListener('click', () => {
-    // show dialog for new book
-    dialog.show();
+    dialog.showModal();
 })
 
-dialog.addEventListener('close', () => {
-    // Add a new book to the library with the new book dialog
-
-    let userInput = {};
-    inputs.forEach( (data) => {
-        userInput[data.name] = data.value;
-    });
-
-    form.reset();
-
-    // console.log(newBook);    // debug
-
-    const newBook = new Book(
-        userInput['title'], userInput['author'],
-        userInput['pageCount'], userInput['readYN']
+close.addEventListener('click', () => {
+    const inputs = dialog.querySelectorAll(
+        'input[type=text], input[type=number], input[name="haveRead"]:checked'
     );
 
+    let userInput = {};
+    inputs.forEach((i) => {userInput[i.name] = i.value;});
+
+    closeDialog();
+
+    // currently unused
+    // use this in future developments when userInput is needed outside this block
+    dialog.returnValue = JSON.stringify(userInput);
+
+    // to do: use this after validation 
+    const newBook = new Book(userInput);
     myLibrary.add(newBook);
     myLibrary.view();
+    
 })
+
+dialog.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDialog();
+    }
+});
+
+cancel.addEventListener('click', () => {
+    closeDialog();
+});
+
+
+// Helper functions
+function closeDialog() {
+    dialog.close();
+    form.reset();
+}
+
+
+
 
 
 
 // demo purposes
-const book_1 = new Book('eloquent javascript', 'marijn haverbeke', 450, 'n');
+const book_1 = new Book({
+    title:'eloquent javascript',
+    author: 'marijn haverbeke',
+    pageCount: 450,
+    haveRead: 'n'
+});
 
-const book_2 = new Book('some super long name to test wrapping', 'a weirdly long long long name', 5, 'y');
+const book_2 = new Book({
+    title: 'some super long name to test wrapping',
+    author: 'a weirdly long long long name',
+    pageCount: 5,
+    haveRead: 'y'
+});
 
-const book_3 = new Book('a confederacy of dunces', 'toole', 300, 'y');
+const book_3 = new Book({
+    title: 'a confederacy of dunces',
+    author: 'john kennedy toole',
+    pageCount: 300,
+    haveRead: 'y'
+});
 
 const myLibrary = new Library;
 
