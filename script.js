@@ -1,3 +1,5 @@
+// refactoring to classes
+
 
 function Book(details) {
     this.title = details.title;
