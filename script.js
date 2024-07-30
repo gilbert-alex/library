@@ -10,108 +10,110 @@ class Book {
     }
 }
 
-function Library() {
-    this.books = [];
-}
+class Library {
 
-Library.prototype.add = function(book) {
-    this.books.push(book);
-};
-
-Library.prototype.view = function() {
-    // drop books into html table and give btn functionality
-
-    let tableBody = document.querySelector('.library>tbody');
-
-    // empty table of any existing books
-    while (tableBody.firstChild) {
-        tableBody.removeChild(tableBody.lastChild);
+    constructor() {
+        this.books = [];
     }
+
+    add(book) {
+        this.books.push(book);
+    };
+
+    view() {
+        // drop books into html table and give btn functionality
+        let tableBody = document.querySelector('.library>tbody');
     
-    // to keep index of books in table for btn functionality
-    let counter = 0;
-
-    this.books.forEach( (book) => { 
-
-            let newRow = document.createElement('tr');
-
-            let newTitle = document.createElement('td');
-            newTitle.textContent = book.title;
-            newRow.appendChild(newTitle);
-
-            let newAuthor = document.createElement('td');
-            newAuthor.textContent = book.author;
-            newRow.appendChild(newAuthor);
-
-            let newPageCount = document.createElement('td');
-            newPageCount.textContent = book.pageCount;
-            newRow.appendChild(newPageCount);
-
-            let newHaveRead = document.createElement('td');
-            newHaveRead.textContent = book.haveRead;
-            newRow.appendChild(newHaveRead);
-
-            let delCell = document.createElement('td');
-            let delBtn = document.createElement('button');
-            delBtn.textContent = 'Delete';
-            delBtn.classList = `delete ${counter}`;
-            delCell.appendChild(delBtn);
-            newRow.appendChild(delCell);
-
-            let chgCell = document.createElement('td');
-            let chgBtn = document.createElement('button');
-            chgBtn.textContent = 'Change';
-            chgBtn.classList = `change ${counter}`;
-            chgCell.appendChild(chgBtn);
-            newRow.appendChild(chgCell);
-
-            tableBody.appendChild(newRow);
-
-            counter++;
+        // empty table of any existing books
+        while (tableBody.firstChild) {
+            tableBody.removeChild(tableBody.lastChild);
         }
-    );
+        
+        // to keep index of books in table for btn functionality
+        let counter = 0;
+    
+        this.books.forEach( (book) => { 
+    
+                let newRow = document.createElement('tr');
+    
+                let newTitle = document.createElement('td');
+                newTitle.textContent = book.title;
+                newRow.appendChild(newTitle);
+    
+                let newAuthor = document.createElement('td');
+                newAuthor.textContent = book.author;
+                newRow.appendChild(newAuthor);
+    
+                let newPageCount = document.createElement('td');
+                newPageCount.textContent = book.pageCount;
+                newRow.appendChild(newPageCount);
+    
+                let newHaveRead = document.createElement('td');
+                newHaveRead.textContent = book.haveRead;
+                newRow.appendChild(newHaveRead);
+    
+                let delCell = document.createElement('td');
+                let delBtn = document.createElement('button');
+                delBtn.textContent = 'Delete';
+                delBtn.classList = `delete ${counter}`;
+                delCell.appendChild(delBtn);
+                newRow.appendChild(delCell);
+    
+                let chgCell = document.createElement('td');
+                let chgBtn = document.createElement('button');
+                chgBtn.textContent = 'Change';
+                chgBtn.classList = `change ${counter}`;
+                chgCell.appendChild(chgBtn);
+                newRow.appendChild(chgCell);
+    
+                tableBody.appendChild(newRow);
+    
+                counter++;
+            }
+        );
+    
+        // helper functions
+        this.delete_handler();
+        this.change_handler();
+    }
 
-    // helper functions
-    this.delete_handler();
-    this.change_handler();
+    delete_handler() {
+        // delete selected book and refresh view
+        let btns = document.querySelectorAll('.delete');
+    
+        btns.forEach( (btn) => {
+            btn.addEventListener('click', (e) => {
+    
+                // console.log(e.target.classList);  // debug
+                let itemToRemove = e.target.classList[1];
+                this.books.splice(itemToRemove,1);
+    
+                // refresh library view after each button click
+                // required to reset the id attributes
+                this.view()
+            });
+        });
+    };
+
+    change_handler() {
+        // toggle selected book's read (y/n) attribute
+        let btns = document.querySelectorAll('.change');
+    
+        btns.forEach( (btn) => {
+            btn.addEventListener('click', (e) => {
+    
+                let index = e.target.classList[1];
+    
+                if (this.books[index].haveRead === 'y') {
+                    this.books[index].haveRead = 'n';
+                } else {
+                    this.books[index].haveRead = 'y';
+                };
+                this.view();
+            });
+        });
+    };
 }
-
-Library.prototype.delete_handler = function() {
-    // delete selected book and refresh view
-    let btns = document.querySelectorAll('.delete');
-
-    btns.forEach( (btn) => {
-        btn.addEventListener('click', (e) => {
-
-            // console.log(e.target.classList);  // debug
-            let itemToRemove = e.target.classList[1];
-            this.books.splice(itemToRemove,1);
-
-            // refresh library view after each button click
-            // required to reset the id attributes
-            this.view()
-        });
-    });
-};
-
-Library.prototype.change_handler = function() {
-    // toggle selected book's read (y/n) attribute
-    let btns = document.querySelectorAll('.change');
-
-    btns.forEach( (btn) => {
-        btn.addEventListener('click', (e) => {
-
-            let index = e.target.classList[1];
-
-            if (this.books[index].haveRead === 'y') {
-                this.books[index].haveRead = 'n';
-            } else {
-                this.books[index].haveRead = 'y';
-            };
-            this.view();
-        });
-    });
-};
 
 
 // DOM element selection
