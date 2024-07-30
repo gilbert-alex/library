@@ -1,11 +1,13 @@
 // refactoring to classes
 
 
-function Book(details) {
-    this.title = details.title;
-    this.author = details.author;
-    this.pageCount = details.pageCount;
-    this.haveRead = details.haveRead;
+class Book {
+    constructor(details) {
+        this.title = details.title;
+        this.author = details.author;
+        this.pageCount = details.pageCount;
+        this.haveRead = details.haveRead;
+    }
 }
 
 function Library() {
