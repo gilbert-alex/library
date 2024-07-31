@@ -70,9 +70,9 @@ class Library {
         }
         
         // to keep index of books in table for btn functionality
-        let counter = 0;
+        // let counter = 0;
     
-        this.#books.map(book => { 
+        this.#books.map((book, index) => { 
     
                 let newRow = document.createElement('tr');
     
@@ -95,20 +95,20 @@ class Library {
                 let delCell = document.createElement('td');
                 let delBtn = document.createElement('button');
                 delBtn.textContent = 'Delete';
-                delBtn.classList = `delete ${counter}`;
+                delBtn.classList = `delete ${index}`;
                 delCell.appendChild(delBtn);
                 newRow.appendChild(delCell);
     
                 let chgCell = document.createElement('td');
                 let chgBtn = document.createElement('button');
                 chgBtn.textContent = 'Change';
-                chgBtn.classList = `change ${counter}`;
+                chgBtn.classList = `change ${index}`;
                 chgCell.appendChild(chgBtn);
                 newRow.appendChild(chgCell);
     
                 tableBody.appendChild(newRow);
     
-                counter++;
+                // counter++;
             }
         );
         // helper functions
