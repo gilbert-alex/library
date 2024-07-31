@@ -1,26 +1,73 @@
 // refactoring to classes
-
+// including private variables with getters/setters
 
 class Book {
-    constructor(details) {
-        this.title = details.title;
-        this.author = details.author;
-        this.pageCount = details.pageCount;
-        this.haveRead = details.haveRead;
+    #details = {};
+
+    constructor(title, author, pages, hasRead) {
+        this.#details.title = title;
+        this.#details.author = author;
+        this.#details.pages = pages;
+        this.#details.hasRead = hasRead;
+    }
+
+    get title() {
+        console.log('title getter run');
+        return this.#details.title;
+    }
+
+    set title(newTitle) {
+        console.log('title setter run');
+        this.#details.title = newTitle;
+    }
+
+    get author() {
+        return this.#details.author;
+    }
+
+    set author(newAuthor) {
+        this.#details.author = newAuthor;
+    }
+
+    get pages() {
+        return this.#details.pages;
+    }
+
+    set pages(newPages) {
+        this.#details.pages = newPages;
+    }
+
+    get hasRead() {
+        return this.#details.hasRead;
+    }
+
+    set hasRead(newHasRead) {
+        this.#details.hasRead = newHasRead;
+    }
+
+    getInfo() {
+        // access book details via getters
+        return {
+            title: this.title,
+            author: this.author,
+            pages: this.pages,
+            hasRead: this.hasRead
+        };
     }
 }
 
 class Library {
+    #books = []; 
 
-    constructor() {
-        this.books = [];
+    addBook(book) {
+        this.#books.push(book);
     }
 
-    add(book) {
-        this.books.push(book);
-    };
+    listBooks() {
+        return this.#books.map(book => book.getInfo());
+    }
 
-    view() {
+    updateWindow() {
         // drop books into html table and give btn functionality
         let tableBody = document.querySelector('.library>tbody');
     
@@ -32,7 +79,7 @@ class Library {
         // to keep index of books in table for btn functionality
         let counter = 0;
     
-        this.books.forEach( (book) => { 
+        this.#books.map(book => { 
     
                 let newRow = document.createElement('tr');
     
@@ -44,13 +91,13 @@ class Library {
                 newAuthor.textContent = book.author;
                 newRow.appendChild(newAuthor);
     
-                let newPageCount = document.createElement('td');
-                newPageCount.textContent = book.pageCount;
-                newRow.appendChild(newPageCount);
+                let newPages = document.createElement('td');
+                newPages.textContent = book.pages;
+                newRow.appendChild(newPages);
     
-                let newHaveRead = document.createElement('td');
-                newHaveRead.textContent = book.haveRead;
-                newRow.appendChild(newHaveRead);
+                let newHasRead = document.createElement('td');
+                newHasRead.textContent = book.hasRead;
+                newRow.appendChild(newHasRead);
     
                 let delCell = document.createElement('td');
                 let delBtn = document.createElement('button');
@@ -86,11 +133,11 @@ class Library {
     
                 // console.log(e.target.classList);  // debug
                 let itemToRemove = e.target.classList[1];
-                this.books.splice(itemToRemove,1);
+                this.#books.splice(itemToRemove,1);
     
                 // refresh library view after each button click
                 // required to reset the id attributes
-                this.view()
+                this.updateWindow()
             });
         });
     };
@@ -104,12 +151,12 @@ class Library {
     
                 let index = e.target.classList[1];
     
-                if (this.books[index].haveRead === 'y') {
-                    this.books[index].haveRead = 'n';
+                if (this.#books[index].hasRead === 'y') {
+                    this.#books[index].hasRead = 'n';
                 } else {
-                    this.books[index].haveRead = 'y';
+                    this.#books[index].hasRead = 'y';
                 };
-                this.view();
+                this.updateWindow();
             });
         });
     };
@@ -117,14 +164,14 @@ class Library {
 
 
 // DOM element selection
-const add = document.querySelector('.add');
+const addBtn = document.querySelector('.add');
 const dialog = document.querySelector('dialog');
 const form = dialog.querySelector('form');
 const close = document.getElementById('close');
 const cancel = document.getElementById('cancel');
 
 // Event listeners
-add.addEventListener('click', () => {
+addBtn.addEventListener('click', () => {
     dialog.showModal();
 })
 
@@ -133,19 +180,21 @@ close.addEventListener('click', () => {
         'input[type=text], input[type=number], input[name="haveRead"]:checked'
     );
 
-    let userInput = {};
-    inputs.forEach((i) => {userInput[i.name] = i.value;});
+    let userInput = [];
+    inputs.forEach(i => userInput.push(i.value));
 
     closeDialog();
 
+    console.log(dialog.returnValue);
+    console.log(typeof dialog.returnValue);
     // currently unused
     // use this in future developments when userInput is needed outside this block
     dialog.returnValue = JSON.stringify(userInput);
 
     // to do: use this after validation 
-    const newBook = new Book(userInput);
-    myLibrary.add(newBook);
-    myLibrary.view();
+    const newBook = new Book(userInput[0], userInput[1], userInput[2], userInput[3]);
+    myLibrary.addBook(newBook);
+    myLibrary.updateWindow();
     
 })
 
@@ -159,8 +208,6 @@ cancel.addEventListener('click', () => {
     closeDialog();
 });
 
-
-// Helper functions
 function closeDialog() {
     dialog.close();
     form.reset();
@@ -172,31 +219,37 @@ function closeDialog() {
 
 
 // demo purposes
-const book_1 = new Book({
-    title:'eloquent javascript',
-    author: 'marijn haverbeke',
-    pageCount: 450,
-    haveRead: 'n'
-});
+const book1 = new Book(
+    'eloquent javascript', 
+    'marijn haverbeke',
+    450,
+    'n'
+);
 
-const book_2 = new Book({
-    title: 'some super long name to test wrapping',
-    author: 'a weirdly long long long name',
-    pageCount: 5,
-    haveRead: 'y'
-});
+const book2 = new Book(
+    'some super long name to test wrapping',
+    'a weirdly long long long name',
+    5,
+    'y'
+);
 
-const book_3 = new Book({
-    title: 'a confederacy of dunces',
-    author: 'john kennedy toole',
-    pageCount: 300,
-    haveRead: 'y'
-});
+const book3 = new Book(
+    'a confederacy of dunces',
+    'john kennedy toole',
+    300,
+    'y'
+);
 
 const myLibrary = new Library;
 
-myLibrary.add(book_1);
-myLibrary.add(book_2);
-myLibrary.add(book_3);
+myLibrary.addBook(book1);
+myLibrary.addBook(book2);
+myLibrary.addBook(book3);
 
-myLibrary.view();
+myLibrary.updateWindow();
+
+// test
+console.log(book1.getInfo());
+console.log(typeof book1.getInfo());
+
+console.log(myLibrary.listBooks());
