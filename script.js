@@ -12,12 +12,10 @@ class Book {
     }
 
     get title() {
-        console.log('title getter run');
         return this.#details.title;
     }
 
     set title(newTitle) {
-        console.log('title setter run');
         this.#details.title = newTitle;
     }
 
@@ -63,9 +61,10 @@ class Library {
         this.#books.push(book);
     }
 
-    listBooks() {
-        return this.#books.map(book => book.getInfo());
-    }
+    // listBooks() {
+    //     // returns an array of objects
+    //     return this.#books.map(book => book.getInfo());
+    // }
 
     updateWindow() {
         // drop books into html table and give btn functionality
@@ -118,13 +117,12 @@ class Library {
                 counter++;
             }
         );
-    
         // helper functions
-        this.delete_handler();
-        this.change_handler();
+        this.deleteBtnHandler();
+        this.changeBtnHandler();
     }
 
-    delete_handler() {
+    deleteBtnHandler() {
         // delete selected book and refresh view
         let btns = document.querySelectorAll('.delete');
     
@@ -142,7 +140,7 @@ class Library {
         });
     };
 
-    change_handler() {
+    changeBtnHandler() {
         // toggle selected book's read (y/n) attribute
         let btns = document.querySelectorAll('.change');
     
@@ -162,21 +160,20 @@ class Library {
     };
 }
 
-
 // DOM element selection
-const addBtn = document.querySelector('.add');
-const dialog = document.querySelector('dialog');
-const form = dialog.querySelector('form');
-const close = document.getElementById('close');
-const cancel = document.getElementById('cancel');
+const newBookBtn = document.querySelector('.new-book');
+const newBookModal = document.querySelector('dialog');
+const newBookForm = newBookModal.querySelector('form');
+const addToLibBtn = document.getElementById('add');
+const cancelBtn = document.getElementById('cancel');
 
 // Event listeners
-addBtn.addEventListener('click', () => {
-    dialog.showModal();
+newBookBtn.addEventListener('click', () => {
+    newBookModal.showModal();
 })
 
-close.addEventListener('click', () => {
-    const inputs = dialog.querySelectorAll(
+addToLibBtn.addEventListener('click', () => {
+    const inputs = newBookModal.querySelectorAll(
         'input[type=text], input[type=number], input[name="haveRead"]:checked'
     );
 
@@ -185,11 +182,9 @@ close.addEventListener('click', () => {
 
     closeDialog();
 
-    console.log(dialog.returnValue);
-    console.log(typeof dialog.returnValue);
     // currently unused
     // use this in future developments when userInput is needed outside this block
-    dialog.returnValue = JSON.stringify(userInput);
+    newBookModal.returnValue = JSON.stringify(userInput);
 
     // to do: use this after validation 
     const newBook = new Book(userInput[0], userInput[1], userInput[2], userInput[3]);
@@ -198,7 +193,7 @@ close.addEventListener('click', () => {
     
 })
 
-dialog.addEventListener('keydown', function(e) {
+newBookModal.addEventListener('keydown', function(e) {
     if (e.key === 'Escape') {
         closeDialog();
     }
@@ -209,8 +204,8 @@ cancel.addEventListener('click', () => {
 });
 
 function closeDialog() {
-    dialog.close();
-    form.reset();
+    newBookModal.close();
+    newBookForm.reset();
 }
 
 
@@ -227,13 +222,6 @@ const book1 = new Book(
 );
 
 const book2 = new Book(
-    'some super long name to test wrapping',
-    'a weirdly long long long name',
-    5,
-    'y'
-);
-
-const book3 = new Book(
     'a confederacy of dunces',
     'john kennedy toole',
     300,
@@ -244,12 +232,5 @@ const myLibrary = new Library;
 
 myLibrary.addBook(book1);
 myLibrary.addBook(book2);
-myLibrary.addBook(book3);
 
 myLibrary.updateWindow();
-
-// test
-console.log(book1.getInfo());
-console.log(typeof book1.getInfo());
-
-console.log(myLibrary.listBooks());
