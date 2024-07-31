@@ -60,7 +60,7 @@ class Library {
         this.#books.push(book);
     }
 
-    updateWindow() {
+    updateView() {
         // drop books into html table and give btn functionality
         let tableBody = document.querySelector('.library>tbody');
     
@@ -69,46 +69,34 @@ class Library {
             tableBody.removeChild(tableBody.lastChild);
         }
         
-        // to keep index of books in table for btn functionality
-        // let counter = 0;
-    
+        // add new row for each book
         this.#books.map((book, index) => { 
     
                 let newRow = document.createElement('tr');
-    
-                let newTitle = document.createElement('td');
-                newTitle.textContent = book.title;
-                newRow.appendChild(newTitle);
-    
-                let newAuthor = document.createElement('td');
-                newAuthor.textContent = book.author;
-                newRow.appendChild(newAuthor);
-    
-                let newPages = document.createElement('td');
-                newPages.textContent = book.pages;
-                newRow.appendChild(newPages);
-    
-                let newHasRead = document.createElement('td');
-                newHasRead.textContent = book.hasRead;
-                newRow.appendChild(newHasRead);
+
+                ['title', 'author', 'pages', 'hasRead'].forEach(detail => {
+                    const cell = document.createElement('td');
+                    cell.textContent = book[detail];
+                    newRow.appendChild(cell);
+                })
     
                 let delCell = document.createElement('td');
                 let delBtn = document.createElement('button');
                 delBtn.textContent = 'Delete';
-                delBtn.classList = `delete ${index}`;
+                delBtn.classList += 'delete';
+                delBtn.dataset.index = index;
                 delCell.appendChild(delBtn);
                 newRow.appendChild(delCell);
     
                 let chgCell = document.createElement('td');
                 let chgBtn = document.createElement('button');
                 chgBtn.textContent = 'Change';
-                chgBtn.classList = `change ${index}`;
+                chgBtn.classList += 'change';
+                chgBtn.dataset.index = index;
                 chgCell.appendChild(chgBtn);
                 newRow.appendChild(chgCell);
     
                 tableBody.appendChild(newRow);
-    
-                // counter++;
             }
         );
         // helper functions
@@ -122,14 +110,11 @@ class Library {
     
         btns.forEach( (btn) => {
             btn.addEventListener('click', (e) => {
-    
-                // console.log(e.target.classList);  // debug
-                let itemToRemove = e.target.classList[1];
-                this.#books.splice(itemToRemove,1);
+                this.#books.splice(e.target.dataset.index,1);
     
                 // refresh library view after each button click
                 // required to reset the id attributes
-                this.updateWindow()
+                this.updateView()
             });
         });
     };
@@ -141,14 +126,14 @@ class Library {
         btns.forEach( (btn) => {
             btn.addEventListener('click', (e) => {
     
-                let index = e.target.classList[1];
+                let index = e.target.dataset.index;
     
                 if (this.#books[index].hasRead === 'y') {
                     this.#books[index].hasRead = 'n';
                 } else {
                     this.#books[index].hasRead = 'y';
                 };
-                this.updateWindow();
+                this.updateView();
             });
         });
     };
@@ -183,7 +168,7 @@ addToLibBtn.addEventListener('click', () => {
     // to do: use this after validation 
     const newBook = new Book(userInput[0], userInput[1], userInput[2], userInput[3]);
     myLibrary.addBook(newBook);
-    myLibrary.updateWindow();
+    myLibrary.updateView();
     
 })
 
@@ -227,4 +212,4 @@ const myLibrary = new Library;
 myLibrary.addBook(book1);
 myLibrary.addBook(book2);
 
-myLibrary.updateWindow();
+myLibrary.updateView();
