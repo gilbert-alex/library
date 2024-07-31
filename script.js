@@ -1,5 +1,4 @@
-// refactoring to classes
-// including private variables with getters/setters
+
 
 class Book {
     #details = {};
@@ -60,11 +59,6 @@ class Library {
     addBook(book) {
         this.#books.push(book);
     }
-
-    // listBooks() {
-    //     // returns an array of objects
-    //     return this.#books.map(book => book.getInfo());
-    // }
 
     updateWindow() {
         // drop books into html table and give btn functionality
