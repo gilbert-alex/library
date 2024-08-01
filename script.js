@@ -1,3 +1,5 @@
+
+
 // objects
 // ============================================================================
 
@@ -54,6 +56,7 @@ class Book {
     }
 }
 
+
 class Library {
     #books = []; 
 
@@ -76,18 +79,65 @@ class Library {
     changeHasRead(index) {
         this.#books[index].hasRead = this.#books[index].hasRead === 'y' ? 'n' : 'y';
     }
+}
 
-    updateView() {
-        // drop books into html table and give btn functionality
-        let tableBody = document.querySelector('.library>tbody');
+
+// HTML Interaction
+// ============================================================================
+
+const ScreenController = (function () {
+    // add books into html table and give btn functionality
+    // contained as an IIFE which is defined and immediately called
+
+    // main page html table
+    let tableBody = document.querySelector('.library>tbody');
+    // modal elements
+    const newBookBtn = document.querySelector('.new-book');
+    const newBookModal = document.querySelector('dialog');
+    const newBookForm = newBookModal.querySelector('form');
+    const addToLibBtn = document.getElementById('add');
+    const cancelBtn = document.getElementById('cancel');
+
+
+    // init Library object in this scope
+    const lib = new Library();
+
+
+    // demo purposes
+    // ====================================================
+
+    const book1 = new Book(
+        'eloquent javascript', 
+        'marijn haverbeke',
+        450,
+        'n'
+    );
+
+    const book2 = new Book(
+        'a confederacy of dunces',
+        'john kennedy toole',
+        300,
+        'y'
+    );
+
+    lib.addBook(book1);
+    lib.addBook(book2);
+
+    // ====================================================
+
+
+    // table
+    // ====================================================
+
+    const updateView = () => {
     
         // empty table of any existing books
         while (tableBody.firstChild) {
             tableBody.removeChild(tableBody.lastChild);
         }
-        
+
         // add new row for each book
-        this.#books.map((book, index) => { 
+        books.map((book, index) => { 
     
                 let newRow = document.createElement('tr');
 
@@ -120,106 +170,88 @@ class Library {
     
                 tableBody.appendChild(newRow);
             });
-
-        // both delete and change btns are included here
-        // this.attachEventHandlers();
     }
 
-    attachEventHandlers() {
+
+    const attachEventHandlers = () => {
         // leverage event propagation to capture all buttons in table body
-        const tableBody = document.querySelector('.library>tbody');
+        // includes both Delete and Change btns
 
         tableBody.addEventListener('click', e => {
             const target = e.target;
             const index = target.dataset.index;
 
             if (target.textContent === 'Delete') {
-                this.removeBook(index);
+                lib.removeBook(index);
             } else if ( target.textContent === 'Change') {
                 console.log(`index:${index}: changeBtnEvent`);
-                this.changeHasRead(index);
+                lib.changeHasRead(index);
             }
 
-            this.updateView();
+            // get current state of Library.#books
+            books = lib.getBooks();
+
+            // refresh table
+            updateView();
         });
     }
 
-}
 
-// Modal interactivity
-// ============================================================================
-const newBookBtn = document.querySelector('.new-book');
-const newBookModal = document.querySelector('dialog');
-const newBookForm = newBookModal.querySelector('form');
-const addToLibBtn = document.getElementById('add');
-const cancelBtn = document.getElementById('cancel');
+    // Interactivity with the New Book modal
+    // ====================================================
 
-// Event listeners
-newBookBtn.addEventListener('click', () => {
-    newBookModal.showModal();
-})
-
-addToLibBtn.addEventListener('click', () => {
-    const inputs = newBookModal.querySelectorAll(
-        'input[type=text], input[type=number], input[name="haveRead"]:checked'
-    );
-
-    let userInput = [];
-    inputs.forEach(i => userInput.push(i.value));
-
-    closeDialog();
-
-    // currently unused
-    // use this in future developments when userInput is needed outside this block
-    newBookModal.returnValue = JSON.stringify(userInput);
-
-    // to do: use this after validation 
-    const newBook = new Book(userInput[0], userInput[1], userInput[2], userInput[3]);
-    myLibrary.addBook(newBook);
-    myLibrary.updateView();
+    newBookBtn.addEventListener('click', () => {
+        // open New Book menu
+        newBookModal.showModal();
+    })
     
-})
-
-newBookModal.addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') {
+    addToLibBtn.addEventListener('click', () => {
+        // add new book to library
+        const inputs = newBookModal.querySelectorAll(
+            'input[type=text], input[type=number], input[name="haveRead"]:checked'
+        );
+    
+        let userInput = [];
+        inputs.forEach(i => userInput.push(i.value));
+    
         closeDialog();
+    
+        // currently unused
+        // use this in future developments when userInput is needed outside this block
+        newBookModal.returnValue = JSON.stringify(userInput);
+    
+        // to do: use this after validation 
+        const newBook = new Book(userInput[0], userInput[1], userInput[2], userInput[3]);
+
+        lib.addBook(newBook);
+        books = lib.getBooks();
+        updateView();
+    })
+    
+
+    newBookModal.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeDialog();
+        }
+    });
+    
+
+    cancel.addEventListener('click', () => {
+        closeDialog();
+    });
+    
+
+    function closeDialog() {
+        newBookModal.close();
+        newBookForm.reset();
     }
-});
 
-cancel.addEventListener('click', () => {
-    closeDialog();
-});
 
-function closeDialog() {
-    newBookModal.close();
-    newBookForm.reset();
-}
+    // init view
+    let books = lib.getBooks();
+    updateView();
+    attachEventHandlers();
+})();
 
 
 
-
-
-
-// demo purposes
-// ============================================================================
-const book1 = new Book(
-    'eloquent javascript', 
-    'marijn haverbeke',
-    450,
-    'n'
-);
-
-const book2 = new Book(
-    'a confederacy of dunces',
-    'john kennedy toole',
-    300,
-    'y'
-);
-
-const myLibrary = new Library;
-
-myLibrary.addBook(book1);
-myLibrary.addBook(book2);
-
-myLibrary.updateView();
-myLibrary.attachEventHandlers();
