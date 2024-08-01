@@ -1,6 +1,6 @@
 
 
-// objects
+// Book and Library Objects
 // ============================================================================
 
 class Book {
@@ -13,6 +13,7 @@ class Book {
         this.#details.hasRead = hasRead;
     }
 
+    // getters/setters
     get title() {
         return this.#details.title;
     }
@@ -45,6 +46,7 @@ class Book {
         this.#details.hasRead = newHasRead;
     }
 
+    // Returns each book's props as an object
     getInfo() {
         // access book details via getters
         return {
@@ -105,30 +107,27 @@ const ScreenController = (function () {
 
     // demo purposes
     // ====================================================
-
     const book1 = new Book(
         'eloquent javascript', 
         'marijn haverbeke',
         450,
         'n'
     );
-
     const book2 = new Book(
         'a confederacy of dunces',
         'john kennedy toole',
         300,
         'y'
     );
-
     lib.addBook(book1);
     lib.addBook(book2);
-
     // ====================================================
 
 
-    // table
+    // Library table on main page
     // ====================================================
 
+    // Update table view
     const updateView = () => {
     
         // empty table of any existing books
@@ -173,6 +172,7 @@ const ScreenController = (function () {
     }
 
 
+    // Functionality of Delete and Change btns on table
     const attachEventHandlers = () => {
         // leverage event propagation to capture all buttons in table body
         // includes both Delete and Change btns
@@ -218,9 +218,9 @@ const ScreenController = (function () {
     
         // currently unused
         // use this in future developments when userInput is needed outside this block
-        newBookModal.returnValue = JSON.stringify(userInput);
-    
-        // to do: use this after validation 
+        // newBookModal.returnValue = JSON.stringify(userInput);
+        // to do: form validations
+
         const newBook = new Book(userInput[0], userInput[1], userInput[2], userInput[3]);
 
         lib.addBook(newBook);
@@ -233,12 +233,12 @@ const ScreenController = (function () {
         if (e.key === 'Escape') {
             closeDialog();
         }
-    });
+    })
     
 
     cancel.addEventListener('click', () => {
         closeDialog();
-    });
+    })
     
 
     function closeDialog() {
@@ -252,6 +252,3 @@ const ScreenController = (function () {
     updateView();
     attachEventHandlers();
 })();
-
-
-
