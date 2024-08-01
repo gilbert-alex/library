@@ -57,7 +57,15 @@ class Library {
     #books = []; 
 
     addBook(book) {
-        this.#books.push(book);
+        if (book instanceof Book) {
+            this.#books.push(book);
+        } else {
+            console.log('Invalid book instance');
+        }
+    }
+
+    getBooks() {
+        return this.#books.map(book => book.getInfo());
     }
 
     updateView() {
