@@ -48,7 +48,6 @@ class Book {
 
     // Returns each book's props as an object
     getInfo() {
-        // access book details via getters
         return {
             title: this.title,
             author: this.author,
@@ -100,7 +99,6 @@ const ScreenController = (function () {
     const addToLibBtn = document.getElementById('add');
     const cancelBtn = document.getElementById('cancel');
 
-
     // init Library object in this scope
     const lib = new Library();
 
@@ -128,40 +126,34 @@ const ScreenController = (function () {
     // ====================================================
 
     // Update table view
+    // Empty existing table and refill each book from from lib
     const updateView = () => {
     
-        // empty table of any existing books
         while (tableBody.firstChild) {
             tableBody.removeChild(tableBody.lastChild);
         }
 
-        // add new row for each book
         books.map((book, index) => { 
     
                 let newRow = document.createElement('tr');
 
-                // add each Book prop
                 ['title', 'author', 'pages', 'hasRead'].forEach(detail => {
                     const cell = document.createElement('td');
                     cell.textContent = book[detail];
                     newRow.appendChild(cell);
                 });
     
-                // create new btns
                 let delCell = document.createElement('td');
                 let delBtn = document.createElement('button');
-                // label it 
+
                 delBtn.textContent = 'Delete';
-                // add arr index to the html element
                 delBtn.dataset.index = index;
-                // put new btn inside new cell
                 delCell.appendChild(delBtn);
-                // add to new row
                 newRow.appendChild(delCell);
     
-                // same logic as delBtn above
                 let chgCell = document.createElement('td');
                 let chgBtn = document.createElement('button');
+
                 chgBtn.textContent = 'Change';
                 chgBtn.dataset.index = index;
                 chgCell.appendChild(chgBtn);
@@ -171,11 +163,10 @@ const ScreenController = (function () {
             });
     }
 
-
     // Functionality of Delete and Change btns on table
+    // leverage event propagation to capture all buttons in table body
+    // includes both Delete and Change btns
     const attachEventHandlers = () => {
-        // leverage event propagation to capture all buttons in table body
-        // includes both Delete and Change btns
 
         tableBody.addEventListener('click', e => {
             const target = e.target;
@@ -188,10 +179,8 @@ const ScreenController = (function () {
                 lib.changeHasRead(index);
             }
 
-            // get current state of Library.#books
             books = lib.getBooks();
 
-            // refresh table
             updateView();
         });
     }
@@ -200,47 +189,68 @@ const ScreenController = (function () {
     // Interactivity with the New Book modal
     // ====================================================
 
+    // open New Book menu
     newBookBtn.addEventListener('click', () => {
-        // open New Book menu
         newBookModal.showModal();
     })
     
+    // add new book to library
     addToLibBtn.addEventListener('click', () => {
-        // add new book to library
-        const inputs = newBookModal.querySelectorAll(
-            'input[type=text], input[type=number], input[name="haveRead"]:checked'
-        );
-    
-        let userInput = [];
-        inputs.forEach(i => userInput.push(i.value));
+
+        const selectors = [
+            'input[type=text]',
+            'input[type=number]',
+            'input[name="haveRead"]:checked',
+        ]
+
+        let formValues = getFormInputValues(newBookForm, selectors);
+
+        if (!validateFormInput(formValues)) {
+            alert('Please fill out all fields');
+            return;
+        }
     
         closeDialog();
-    
-        // currently unused
-        // use this in future developments when userInput is needed outside this block
-        // newBookModal.returnValue = JSON.stringify(userInput);
-        // to do: form validations
 
-        const newBook = new Book(userInput[0], userInput[1], userInput[2], userInput[3]);
+        const newBook = new Book(
+            formValues.title, 
+            formValues.author, 
+            formValues.pages, 
+            formValues.hasRead
+        );
 
         lib.addBook(newBook);
         books = lib.getBooks();
         updateView();
     })
-    
 
+    // Function to get form input values
+    function getFormInputValues(modal, selectors) {
+        const inputs = modal.querySelectorAll(selectors.join(', '));
+
+        const i = {};
+        inputs.forEach(input => i[input.name] = input.value);
+        return i;
+    }
+
+    // Function to validate form inputs
+    function validateFormInput(inputs) {
+        return Object.values(inputs).every(input => input.trim() !== '');
+    }
+    
+    // close the dialog by pressing ESC
     newBookModal.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') {
             closeDialog();
         }
     })
     
-
-    cancel.addEventListener('click', () => {
+    // close dialog with the provided cancel btn
+    cancelBtn.addEventListener('click', () => {
         closeDialog();
     })
     
-
+    // Function to close and reset the dialog
     function closeDialog() {
         newBookModal.close();
         newBookForm.reset();
