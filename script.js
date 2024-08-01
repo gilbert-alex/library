@@ -173,9 +173,10 @@ const ScreenController = (function () {
             const index = target.dataset.index;
 
             if (target.textContent === 'Delete') {
+                // console.log(`index:${index}: deleteBtnEvent`);
                 lib.removeBook(index);
             } else if ( target.textContent === 'Change') {
-                console.log(`index:${index}: changeBtnEvent`);
+                // console.log(`index:${index}: changeBtnEvent`);
                 lib.changeHasRead(index);
             }
 
@@ -200,13 +201,13 @@ const ScreenController = (function () {
         const selectors = [
             'input[type=text]',
             'input[type=number]',
-            'input[name="haveRead"]:checked',
+            'input[name="hasRead"]:checked',
         ]
 
         let formValues = getFormInputValues(newBookForm, selectors);
 
         if (!validateFormInput(formValues)) {
-            alert('Please fill out all fields');
+            // terminate event listener if !validation
             return;
         }
     
@@ -235,7 +236,23 @@ const ScreenController = (function () {
 
     // Function to validate form inputs
     function validateFormInput(inputs) {
-        return Object.values(inputs).every(input => input.trim() !== '');
+
+        // check for any blank input[type=text] fields
+        if (!Object.values(inputs).every(input => input.trim() !== '')) {
+            alert('Please fill out all fields');
+        // check title len
+        } else if (inputs.title.length > 70) {
+            alert('Title is limited to 70 characters.');
+        // check author len
+        } else if (inputs.author.length > 50) {
+            alert('Author is limited to 50 characters.');
+        // check pages for non-numeric
+        } else if (!/^\d+$/.test(inputs.pages)) {
+            alert('Pages must be a number.')
+        // if all pass
+        } else {
+            return true;
+        }
     }
     
     // close the dialog by pressing ESC
@@ -255,7 +272,6 @@ const ScreenController = (function () {
         newBookModal.close();
         newBookForm.reset();
     }
-
 
     // init view
     let books = lib.getBooks();
