@@ -1,4 +1,5 @@
-
+// objects
+// ============================================================================
 
 class Book {
     #details = {};
@@ -68,6 +69,14 @@ class Library {
         return this.#books.map(book => book.getInfo());
     }
 
+    removeBook(index) {
+        this.#books.splice(index, 1);
+    }
+
+    changeHasRead(index) {
+        this.#books[index].hasRead = this.#books[index].hasRead === 'y' ? 'n' : 'y';
+    }
+
     updateView() {
         // drop books into html table and give btn functionality
         let tableBody = document.querySelector('.library>tbody');
@@ -82,72 +91,63 @@ class Library {
     
                 let newRow = document.createElement('tr');
 
+                // add each Book prop
                 ['title', 'author', 'pages', 'hasRead'].forEach(detail => {
                     const cell = document.createElement('td');
                     cell.textContent = book[detail];
                     newRow.appendChild(cell);
-                })
+                });
     
+                // create new btns
                 let delCell = document.createElement('td');
                 let delBtn = document.createElement('button');
+                // label it 
                 delBtn.textContent = 'Delete';
-                delBtn.classList += 'delete';
+                // add arr index to the html element
                 delBtn.dataset.index = index;
+                // put new btn inside new cell
                 delCell.appendChild(delBtn);
+                // add to new row
                 newRow.appendChild(delCell);
     
+                // same logic as delBtn above
                 let chgCell = document.createElement('td');
                 let chgBtn = document.createElement('button');
                 chgBtn.textContent = 'Change';
-                chgBtn.classList += 'change';
                 chgBtn.dataset.index = index;
                 chgCell.appendChild(chgBtn);
                 newRow.appendChild(chgCell);
     
                 tableBody.appendChild(newRow);
-            }
-        );
-        // helper functions
-        this.deleteBtnHandler();
-        this.changeBtnHandler();
+            });
+
+        // both delete and change btns are included here
+        // this.attachEventHandlers();
     }
 
-    deleteBtnHandler() {
-        // delete selected book and refresh view
-        let btns = document.querySelectorAll('.delete');
-    
-        btns.forEach( (btn) => {
-            btn.addEventListener('click', (e) => {
-                this.#books.splice(e.target.dataset.index,1);
-    
-                // refresh library view after each button click
-                // required to reset the id attributes
-                this.updateView()
-            });
-        });
-    };
+    attachEventHandlers() {
+        // leverage event propagation to capture all buttons in table body
+        const tableBody = document.querySelector('.library>tbody');
 
-    changeBtnHandler() {
-        // toggle selected book's read (y/n) attribute
-        let btns = document.querySelectorAll('.change');
-    
-        btns.forEach( (btn) => {
-            btn.addEventListener('click', (e) => {
-    
-                let index = e.target.dataset.index;
-    
-                if (this.#books[index].hasRead === 'y') {
-                    this.#books[index].hasRead = 'n';
-                } else {
-                    this.#books[index].hasRead = 'y';
-                };
-                this.updateView();
-            });
+        tableBody.addEventListener('click', e => {
+            const target = e.target;
+            const index = target.dataset.index;
+
+            if (target.textContent === 'Delete') {
+                this.removeBook(index);
+            } else if ( target.textContent === 'Change') {
+                console.log(`index:${index}: changeBtnEvent`);
+                this.changeHasRead(index);
+            }
+
+            this.updateView();
         });
-    };
+    }
+
 }
 
-// DOM element selection
+// Modal interactivity
+// ============================================================================
 const newBookBtn = document.querySelector('.new-book');
 const newBookModal = document.querySelector('dialog');
 const newBookForm = newBookModal.querySelector('form');
@@ -201,6 +201,7 @@ function closeDialog() {
 
 
 // demo purposes
+// ============================================================================
 const book1 = new Book(
     'eloquent javascript', 
     'marijn haverbeke',
@@ -221,3 +222,4 @@ myLibrary.addBook(book1);
 myLibrary.addBook(book2);
 
 myLibrary.updateView();
+myLibrary.attachEventHandlers();
