@@ -1,3 +1,6 @@
+## ignore operating system files
+.DS_Store
+
 ## ignore sandbox environment for test code and techniques
 dev/
 
