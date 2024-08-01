@@ -1,2 +1,5 @@
 ## ignore sandbox environment for test code and techniques
 dev/
+
+## ignore notes
+notes/
