@@ -200,7 +200,7 @@ const ScreenController = (function () {
         const selectors = [
             'input[type=text]',
             'input[type=number]',
-            'input[name="hasRead"]:checked',
+            'input[name="hasRead"]',
         ]
 
         let formValues = getFormInputValues(newBookForm, selectors);
@@ -216,7 +216,7 @@ const ScreenController = (function () {
             formValues.title, 
             formValues.author, 
             formValues.pages, 
-            formValues.hasRead
+            formValues.hasRead ? 'y' : 'n',
         );
 
         lib.addBook(newBook);
@@ -229,14 +229,26 @@ const ScreenController = (function () {
         const inputs = modal.querySelectorAll(selectors.join(', '));
 
         const i = {};
-        inputs.forEach(input => i[input.name] = input.value);
+
+        // inputs.forEach(input => i[input.name] = input.value);
+
+        inputs.forEach(input => {
+            if (input.name === 'hasRead') {
+                i[input.name] = input.checked;
+            } else {
+                i[input.name] = input.value;
+            }
+        })
         return i;
     }
 
     // Function to validate form inputs
     function validateFormInput(inputs) {
 
-        if (!Object.values(inputs).every(input => input.trim() !== '')) {
+        const stringFields = Object.keys(inputs).filter(i => i !== 'hasRead').map(j => inputs[j]);
+        const boolFields = Object.keys(inputs).filter(i => i === 'hasRead').map(j => inputs[j]);
+
+        if (!stringFields.every(input => input.trim() !== '')) {
             alert('Please fill out all fields');
             return false;
         } else if (inputs.title.length > 70) {
@@ -253,6 +265,9 @@ const ScreenController = (function () {
             return false;
         } else if (/[#~<>]/.test(inputs.title)) {
             alert('Invalid characters in title');
+            return false;
+        } else if (!boolFields.every(i => i === true || i === false)) {
+            alert('Invalid checkbox selection');
             return false;
         } else {
             return true;
