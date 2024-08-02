@@ -1,5 +1,4 @@
 
-
 // Book and Library Objects
 // ============================================================================
 
@@ -237,19 +236,24 @@ const ScreenController = (function () {
     // Function to validate form inputs
     function validateFormInput(inputs) {
 
-        // check for any blank input[type=text] fields
         if (!Object.values(inputs).every(input => input.trim() !== '')) {
             alert('Please fill out all fields');
-        // check title len
+            return false;
         } else if (inputs.title.length > 70) {
             alert('Title is limited to 70 characters.');
-        // check author len
+            return false;
         } else if (inputs.author.length > 50) {
             alert('Author is limited to 50 characters.');
-        // check pages for non-numeric
+            return false;
         } else if (!/^\d+$/.test(inputs.pages)) {
             alert('Pages must be a number.')
-        // if all pass
+            return false;
+        } else if (!Number(inputs.pages) > 0) {
+            alert('Pages must be greater than zero')
+            return false;
+        } else if (/[#~<>]/.test(inputs.title)) {
+            alert('Invalid characters in title');
+            return false;
         } else {
             return true;
         }
