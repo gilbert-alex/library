@@ -226,6 +226,21 @@ const ScreenController = (function () {
     function getFormInputValues(modal, selectors) {
         const inputs = modal.querySelectorAll(selectors.join(', '));
 
+        console.log(typeof inputs);
+        console.log(Array.from(inputs));
+
+        // test .reduce() on a NodeList
+        let test = Array.from(inputs).reduce((accumulator, i) => {
+            if (i.name === 'hasRead') {
+                accumulator[i.name] = i.checked;
+                return accumulator;
+            } else {
+                accumulator[i.name] = i.value.trim();
+                return accumulator;
+            }
+        }, {});
+        console.log(test);
+
         const i = {};
         inputs.forEach(input => {
             if (input.name === 'hasRead') {
@@ -234,6 +249,9 @@ const ScreenController = (function () {
                 i[input.name] = input.value.trim();
             }
         })
+
+        console.log(`objs are the same ${JSON.stringify(test) === JSON.stringify(i)}`);
+        console.log(i);
         return i;
     }
 
@@ -253,7 +271,7 @@ const ScreenController = (function () {
             alert('Author is limited to 50 characters.');
             return false;
         } else if (!/^\d+$/.test(inputs.pages)) {
-            alert('Pages must be a number.')
+            alert('Pages must be a positive number.')
             return false;
         } else if (!Number(inputs.pages) > 0) {
             alert('Pages must be greater than zero')
