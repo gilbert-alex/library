@@ -172,10 +172,8 @@ const ScreenController = (function () {
             const index = target.dataset.index;
 
             if (target.textContent === 'Delete') {
-                // console.log(`index:${index}: deleteBtnEvent`);
                 lib.removeBook(index);
             } else if ( target.textContent === 'Change') {
-                // console.log(`index:${index}: changeBtnEvent`);
                 lib.changeHasRead(index);
             }
 
@@ -206,7 +204,7 @@ const ScreenController = (function () {
         let formValues = getFormInputValues(newBookForm, selectors);
 
         if (!validateFormInput(formValues)) {
-            // terminate event listener if !validation
+            // avoid duplicating if validation fails
             return;
         }
     
@@ -229,14 +227,11 @@ const ScreenController = (function () {
         const inputs = modal.querySelectorAll(selectors.join(', '));
 
         const i = {};
-
-        // inputs.forEach(input => i[input.name] = input.value);
-
         inputs.forEach(input => {
             if (input.name === 'hasRead') {
                 i[input.name] = input.checked;
             } else {
-                i[input.name] = input.value;
+                i[input.name] = input.value.trim();
             }
         })
         return i;
@@ -245,8 +240,8 @@ const ScreenController = (function () {
     // Function to validate form inputs
     function validateFormInput(inputs) {
 
-        const stringFields = Object.keys(inputs).filter(i => i !== 'hasRead').map(j => inputs[j]);
-        const boolFields = Object.keys(inputs).filter(i => i === 'hasRead').map(j => inputs[j]);
+        const stringFields = Object.values(inputs).filter(v => typeof v === 'string');
+        const boolFields = Object.values(inputs).filter(v => typeof v === 'boolean');
 
         if (!stringFields.every(input => input.trim() !== '')) {
             alert('Please fill out all fields');
