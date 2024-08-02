@@ -222,15 +222,11 @@ const ScreenController = (function () {
         updateView();
     })
 
-    // Function to get form input values
+    // Extract NodeList names/values into an obj
     function getFormInputValues(modal, selectors) {
         const inputs = modal.querySelectorAll(selectors.join(', '));
 
-        console.log(typeof inputs);
-        console.log(Array.from(inputs));
-
-        // test .reduce() on a NodeList
-        let test = Array.from(inputs).reduce((accumulator, i) => {
+        let inputsObj = Array.from(inputs).reduce((accumulator, i) => {
             if (i.name === 'hasRead') {
                 accumulator[i.name] = i.checked;
                 return accumulator;
@@ -239,20 +235,8 @@ const ScreenController = (function () {
                 return accumulator;
             }
         }, {});
-        console.log(test);
 
-        const i = {};
-        inputs.forEach(input => {
-            if (input.name === 'hasRead') {
-                i[input.name] = input.checked;
-            } else {
-                i[input.name] = input.value.trim();
-            }
-        })
-
-        console.log(`objs are the same ${JSON.stringify(test) === JSON.stringify(i)}`);
-        console.log(i);
-        return i;
+        return inputsObj;
     }
 
     // Function to validate form inputs
